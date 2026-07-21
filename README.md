@@ -21,6 +21,33 @@ This is intentionally separate from the PaddleOCR FastAPI service.
   - `TaskStatusReport`
   - `EngineData1`
 
+## Example Output
+
+Below is a compact example from `TaskStatusReport.pdf`. The full side-by-side review is available at [comparisons/task_status_report.html](comparisons/task_status_report.html).
+
+<table>
+  <tr>
+    <th>Rendered PDF Page</th>
+    <th>Extracted Table Snippet</th>
+  </tr>
+  <tr>
+    <td width="45%">
+      <img src="assets/task_status_report_page_001.png" alt="Task Status Report page 1">
+      <br>
+      <sub>Open the HTML report above for the full embedded page image.</sub>
+    </td>
+    <td width="55%">
+      <table>
+        <tr><th>Task No</th><th>Description</th><th>Issuer/Type</th><th>Card No</th><th>Status</th></tr>
+        <tr><td>00001</td><td>STABILIZERS - ELEVATORS - A320 FAM ELEVATOR WEIGHT CHECK</td><td>AIRBUS / SB</td><td>A320-55-1034</td><td>CLOSED</td></tr>
+        <tr><td>00002</td><td>MODIFICATION INB AND OUTB FLAP</td><td>AIRBUS / SB</td><td>A320-57-1192</td><td>CLOSED</td></tr>
+        <tr><td>00003</td><td>HUMIDIFIER PADS</td><td>AIRBUS / AD</td><td>21-703-01S</td><td>CLOSED</td></tr>
+        <tr><td>00004</td><td>FLIGHT AUGMENTATION (FAC)</td><td>AIRBUS / MPD</td><td>226000-02-1</td><td>CLOSED</td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
 ## Quick Run
 
 From this folder:
