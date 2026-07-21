@@ -4,6 +4,7 @@ Standalone repository for extracting tables from PDFs with `sahilchachra/Unlimit
 
 Primary source:
 
+- Original Unlimited OCR by Baidu: https://huggingface.co/baidu/Unlimited-OCR
 - Hugging Face model repository: [sahilchachra/Unlimited-OCR-GGUF](https://huggingface.co/sahilchachra/Unlimited-OCR-GGUF)
 - Hugging Face files: [model file browser](https://huggingface.co/sahilchachra/Unlimited-OCR-GGUF/tree/main)
 
