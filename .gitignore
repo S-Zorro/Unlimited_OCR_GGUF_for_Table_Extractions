@@ -2,8 +2,8 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
+PROJECT_SUMMARY.md
 models/
 third_party/
 runs/
 *.log
-

@@ -1,12 +1,12 @@
 # Unlimited-OCR GGUF Isolated Setup Steps
 
-This is an isolated test for:
+This repository provides a standalone PDF table extraction workflow for:
 
 - Hugging Face repo: `sahilchachra/Unlimited-OCR-GGUF`
 - Model: `Unlimited-OCR-Q8_0.gguf`
 - Vision projector: `mmproj-Unlimited-OCR-F16.gguf`
 
-This test is separate from the PaddleOCR/FastAPI repository.
+It renders PDF pages, runs local GGUF-based OCR, and generates side-by-side comparison reports for reviewing extracted tables against the original page image.
 
 ## Current Local Notes
 
@@ -27,6 +27,37 @@ nvidia-smi
 ```
 
 If this still fails, build and test CPU-only first.
+
+## CUDA Version Requirement
+
+This workflow was tested on an RTX 4050 GPU. For that GPU, use CUDA 12.x. The working local build used:
+
+```text
+CUDA 12.4
+```
+
+CUDA 11.5 was too old for the tested RTX 4050 / Ada Lovelace compute capability `8.9`. It fails when targeting:
+
+```text
+compute_89
+```
+
+If multiple CUDA versions are installed, make sure the shell and CMake use CUDA 12.4:
+
+```bash
+export PATH=/usr/local/cuda-12.4/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH
+
+which nvcc
+nvcc --version
+```
+
+Expected:
+
+```text
+/usr/local/cuda-12.4/bin/nvcc
+release 12.4
+```
 
 ## Folder Layout
 
@@ -316,7 +347,7 @@ If CUDA build fails with an error like:
 /usr/include/c++/11/bits/std_function.h:435:145: error: parameter packs not expanded with ‘...’
 ```
 
-This is usually a CUDA `nvcc` plus GCC/libstdc++ compatibility problem, not a llama.cpp source problem.
+This can happen when the wrong CUDA compiler is being used. In this project, the important confirmed fix was moving away from CUDA 11.5 and explicitly using CUDA 12.4.
 
 First check:
 
@@ -326,11 +357,13 @@ gcc --version
 g++ --version
 ```
 
-On Ubuntu 22.04, GCC/G++ 11 is common. Some CUDA toolkit versions fail with GCC 11. Use GCC/G++ 10 as the CUDA host compiler:
+Make sure `nvcc` resolves to CUDA 12.4:
 
 ```bash
-sudo apt update
-sudo apt install gcc-10 g++-10
+export PATH=/usr/local/cuda-12.4/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH
+which nvcc
+nvcc --version
 ```
 
 Then rebuild from a clean CMake directory:
@@ -341,14 +374,15 @@ rm -rf build
 cmake -B build \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_CUDA=ON \
-  -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-10 \
+  -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.4/bin/nvcc \
+  -DCUDAToolkit_ROOT=/usr/local/cuda-12.4 \
   -DCMAKE_CUDA_ARCHITECTURES=89
 cmake --build build -j 1 --target llama-mtmd-cli
 ```
 
-Why `89`: RTX 4050 is Ada Lovelace, compute capability 8.9. This avoids compiling many unnecessary older CUDA architectures and reduces build time/memory.
+Why `89`: the tested RTX 4050 GPU is Ada Lovelace, compute capability 8.9. This avoids compiling many unnecessary older CUDA architectures and reduces build time/memory.
 
-If CMake or nvcc says architecture `89` is unsupported, your CUDA toolkit is too old for RTX 4050. Install a newer CUDA toolkit, preferably CUDA 12.x, then rebuild.
+If CMake or nvcc says architecture `89` is unsupported on this GPU, the CUDA toolkit is too old. Install a newer CUDA toolkit, preferably CUDA 12.x, then rebuild.
 
 CPU fallback:
 

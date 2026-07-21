@@ -1,14 +1,33 @@
-# Unlimited OCR GGUF Document Test
+# Unlimited OCR GGUF Document Extraction
 
-Isolated repository for testing `sahilchachra/Unlimited-OCR-GGUF` against local aviation/maintenance PDFs.
+Standalone repository for extracting tables from PDFs with `sahilchachra/Unlimited-OCR-GGUF` and reviewing extracted output against the original rendered pages.
 
-The tested model path is:
+Primary source:
+
+- Hugging Face model repository: [sahilchachra/Unlimited-OCR-GGUF](https://huggingface.co/sahilchachra/Unlimited-OCR-GGUF)
+- Hugging Face files: [model file browser](https://huggingface.co/sahilchachra/Unlimited-OCR-GGUF/tree/main)
+
+The model artifacts used are:
 
 - `Unlimited-OCR-Q8_0.gguf`
 - `mmproj-Unlimited-OCR-F16.gguf`
 - DeepSeek-OCR-aware `llama.cpp` branch with `llama-mtmd-cli`
 
-This is intentionally separate from the PaddleOCR FastAPI service.
+## CUDA Requirement
+
+This workflow was tested on an RTX 4050 GPU. For that GPU, CUDA 12.x is required. The working local build used:
+
+```text
+CUDA 12.4
+```
+
+CUDA 11.5 was too old for the tested RTX 4050 / Ada Lovelace compute capability `8.9` path and failed when compiling for `compute_89`. For the tested GPU, build llama.cpp with:
+
+```bash
+-DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.4/bin/nvcc
+-DCUDAToolkit_ROOT=/usr/local/cuda-12.4
+-DCMAKE_CUDA_ARCHITECTURES=89
+```
 
 ## What This Repo Provides
 
